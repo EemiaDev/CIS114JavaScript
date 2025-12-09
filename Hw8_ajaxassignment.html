@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="JavaScript/Ajax Programming Homework 8: AJAX Applications">
+<title>AJAX Applications</title>
+<link rel="icon" href="Images/CIS114.png">
+<link rel="stylesheet" href="styles.css" type="text/css">
+<style>
+table,th,td {
+  border : 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+</style>
+</head>
+
+<body>
+    <header>
+      <h1>Homework 8 - AJAX Application</h1>
+    </header>
+
+    <ul class="breadcrumb">
+      <li><a href="Hw1.html">Home</a></li>
+      <li>Homework 8 - AJAX Applications</li>
+    </ul>
+
+<button type="button" onclick="loadDoc()">Get CD collection</button>
+<br>
+<table id="demo"></table>
+
+<script>
+function loadDoc() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    myFunction(this);
+  }
+  xhttp.open("GET", "Hw8_cd_catalog.xml");
+  xhttp.send();
+}
+function myFunction(xml) {
+  const xmlDoc = xml.responseXML;
+  const x = xmlDoc.getElementsByTagName("CD");
+  let table="<tr><th>Artist</th><th>Title</th></tr>";
+  for (let i = 0; i <x.length; i++) { 
+    table += "<tr><td>" +
+    x[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue +
+    "</td><td>" +
+    x[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
+    "</td></tr>";
+  }
+  document.getElementById("demo").innerHTML = table;
+}
+</script>
+
+<h2>Explanation of AJAX</h2>
+<p>
+The JavaScript code uses AJAX to retrieve data from the external xml file without forcing a full page reload. 
+When a user clicks on the "Get CD collection" button, a new XMLHttpRequest object is created.
+The xhttp.open() method configures the request to use the GET method to read data from the XML file.
+Then, the xhttp.send() method sends the configured request to the server, which allows the application to send and retrieve data without reloading the whole page.
+The last step of the AJAX process is defined by the xhttp.onload event handler, which parses the returned XML data into a DOM structure, extracts the ARTIST and TITLE data by iterating through the CD elements, and dynamically inserts the results into the "demo" table element.
+</p>
+
+<h2>REST API</h2>
+<p>
+<strong>Project Context: </strong> Our team is building the AirMuseum application that helps art enthusiasts to explore and enjoy artworks from around the world.
+We propose to use The Metropolitan Museum of Art Collection API to enrich our application with over 470,000 artworks with metadata and high-resolution images from The Metropolitan Museum of Art Collection.
+</p>
+<p>
+<strong>Data Format and Access Requirement: </strong> The Metropolitan Museum of Art Collection API provides all its data in the highly machine-readable and widely adopted JSON format, which includes all necessary metadata and the corresponding high-resolution image URLs for public domain works.
+Since our application uses AJAX with JavaScript, aqauiring JSON data is a native and simple solution and will significantly speed up our development cycle. 
+No API key is required to access and use The Metropolitan Museum of Art Collection API. This is a huge advantage as it streamlines the integration process and we quickly experiment with the API's functionalities without administrative hurdles.
+Most significantly, there are no fees or licensing charges associated with using the API or the public domain data and images.
+</p>
+<p>
+<strong>Constraints: </strong>Please limit request rate to 80 requests per second.
+</p>
+<p>
+<strong>Conclusion: </strong>The Metropolitan Museum of Art Collection API offers a zero-cost service for us to access high-quality, publicly-licensed art data delivered in the ideal JSON format, all without the friction of keys or fees. 
+This approach will allow us to integrate beautiful, informative, and legal content into our AirMuseum app.
+</p>
+<p>
+<strong>Documentation: </strong><br>
+<a href="https://metmuseum.github.io/?ref=freepublicapis.com">The Metropolitan Museum of Art Collection API</a><br>
+</p>
+
+<h2>API Example</h2>
+<p>
+This example is about how AirMuseum app might use The Metropolitan Museum of Art Collection API to display an artwork based on it's unique objectID. 
+Click on the button below to display Duccio's Madonna and Child.
+</p>
+
+<button type="button" onclick="getArt()">Display Art</button><br>
+<div id="art"></div>
+
+<script>
+function getArt() {
+  // Object ID for "Madonna and Child" is 438754   
+  fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/438754`)
+    .then(response => response.json())
+    .then(artData => {
+      document.getElementById('art').innerHTML = `
+      <p><strong>${artData.title}</strong></p>
+      <p>${artData.artistDisplayName}</p>
+      <img src="${artData.primaryImage}" alt="${artData.title}" style="max-width: 350px; height: auto;">`;
+    });
+}
+
+</script>
+
+<br><br><br><br><br><br><br><br>
+</body>
+</html>
