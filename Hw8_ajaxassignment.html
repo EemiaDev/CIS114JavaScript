@@ -103,8 +103,7 @@ function getArt() {
     .then(response => response.json())
     .then(artData => {
       document.getElementById('art').innerHTML = `
-      <p><strong>${artData.title}</strong></p>
-      <p>${artData.artistDisplayName}</p>
+      <p><strong>${artData.title}</strong><br>${artData.artistDisplayName}</p>
       <img src="${artData.primaryImage}" alt="${artData.title}" style="max-width: 350px; height: auto;">`;
     });
 }
